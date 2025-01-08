@@ -126,6 +126,9 @@ def save_ascii_text(ascii_art, text_file):
         for row in ascii_art:
             f.write(row + '\n')
 
+def convert_ascii_to_grayscale_image():
+    print("A work in progress.")
+
 def print_custom_help():
     """
     Prints a custom help message.
@@ -139,12 +142,13 @@ def print_custom_help():
         python asciimage.py --file <image_path> [--scale <float>] [--ascii_cols <int>] [--out <output_type>] [--font_color=<font>] [--font_type=<font>] [--symbols <string>]
 
     Options:
+        --mode        Mode of operation: 'to_ascii' converts image to ASCII, 'from_ascii' converts ASCII to image (required).
         --file        Path to the input image file (required).
-        --scale       Scale factor for aspect ratio (default: 0.5, a good value to visually maintain the ratio of ASCII characters).
+        --scale       Scale factor for aspect ratio (default: 0.43, a good value to visually maintain the ratio of ASCII characters).
         --ascii_cols  Number of ASCII columns (default: 100).
-        --out         Output type: text (default) or image (creates PNG).
-        --font_color  Color of the image characters; the background will be the opposite.
-        --font_type   Font type for output image: default, arial, dirtydoz, fudd, times or times_new_roman.
+        --out         Output path (default: ./results).
+        --font_color  Color of the image characters; the background will be the opposite: (white, black)
+        --font_type   Font type for output image: (default, arial, dirtydoz, fudd, times or times_new_roman).
         --symbols     Custom ASCII characters to use (optional, e.g. --symbols dfsg256B%8).
 
     Author:
@@ -161,12 +165,13 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', dest='imgFile', required=True)
-    parser.add_argument('--scale', dest='scale', required=False, default="auto")
+    parser.add_argument('--scale', dest='scale', required=False, default=0.43)
     parser.add_argument('--ascii_cols', dest='ascii_cols', required=False)
     parser.add_argument('--out', dest='out', required=False)
-    parser.add_argument('--font_color', dest='font_color', required=False, default='black') 
-    parser.add_argument('--font_type', dest='font_type', required=False, default='default') 
+    parser.add_argument('--font_color', dest='font_color', required=False, default='black', choices=['white', 'black']) 
+    parser.add_argument('--font_type', dest='font_type', required=False, default='default', choices=['default', 'arial', 'dirtydoz', 'fudd', 'times', 'times_new_roman']) 
     parser.add_argument('--symbols', dest='symbols', required=False)
+    parser.add_argument('--mode', dest='mode', required=True, choices=['to_ascii', 'from_ascii'])
 
     args = parser.parse_args()
 
@@ -174,21 +179,35 @@ def main():
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    image = Image.open(args.imgFile).convert('L')
-    ascii_cols = int(args.ascii_cols) if args.ascii_cols else 100
-    scale = float(args.scale) if args.scale != "auto" else 0.43
-    _symbols = str(args.symbols) if args.symbols else _symbols
+    if args.mode == 'to_ascii':
+        image = Image.open(args.imgFile).convert('L')
+        ascii_cols = int(args.ascii_cols) if args.ascii_cols else 100
+        scale = float(args.scale) if args.scale else 0.43
+        _symbols = str(args.symbols) if args.symbols else _symbols
 
-    print(f"Input image dimensions: {image.size[0]} x {image.size[1]}")
-    print("Generating ASCII art...")
+        print(f"Input image dimensions: {image.size[0]} x {image.size[1]}")
+        print("Generating ASCII art...")
 
-    ascii_art = convert_image_to_ascii(image, ascii_cols, scale, _symbols)
+        ascii_art = convert_image_to_ascii(image, ascii_cols, scale, _symbols)
 
-    text_file = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_ascii.txt")
-    save_ascii_text(ascii_art, text_file)
+        text_file = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_ascii.txt")
+        save_ascii_text(ascii_art, text_file)
 
-    output_image = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_ascii.png")
-    save_ascii_as_image(convert_image_to_ascii(image, ascii_cols, 1, _symbols), output_image, args.font_color, args.font_type)  # Changed here
+        output_image = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_ascii.png")
+        save_ascii_as_image(convert_image_to_ascii(image, ascii_cols, 1, _symbols), output_image, args.font_color, args.font_type)  # Changed here
+    elif args.mode == 'from_ascii':
+        with open(args.imgFile, 'r') as f:
+            ascii_art = [line.rstrip('\n') for line in f.readlines()]
 
+        output_image = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_reconstructed.png")
+        
+        print(f"Input dimensions: ")
+        print("Generating image from ASCII...")
+
+        convert_ascii_to_grayscale_image()
+
+        # save image
+        #...
+        
 if __name__ == '__main__':
     main()

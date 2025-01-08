@@ -6,6 +6,17 @@ A Python program that converts images into ASCII representations, and vice versa
 
 ### Example of usage:
 
+Clone the project:
+```bash
+git clone https://github.com/agarnung/asciimage.git
+```
+
+Install required dependencies (it is recommended tu use a virtual environment):
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+Run the program in the root folder, e.g.:
 ```bash
 python asciimage.py --file /home/alejandro/Pictures/lena.png --scale 0.43 --ascii_cols 100 --out ./results --font_color white --font_type times --symbols wasd123
 ```

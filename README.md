@@ -35,6 +35,11 @@ Run the program in the root folder, e.g.:
 python asciimage.py --file /home/alejandro/Pictures/lena.png --scale 0.43 --ascii_cols 100 --out ./results --font_color white --font_type times --symbols wasd123
 ```
 
+Please refer to the program help:
+```bash
+python3 asciimage.py --help
+```
+
 ---
 
 ### References:

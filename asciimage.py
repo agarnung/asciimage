@@ -136,16 +136,16 @@ def print_custom_help():
     A Python program to convert images into ASCII representations, and vice versa.
 
     Usage:
-        python asciimage.py --file <image_path> [--symbols <string>] [--scale <float>] [--ascii_cols <int>] [--out=<output_type>] [--font_type=<font>]
+        python asciimage.py --file <image_path> [--scale <float>] [--ascii_cols <int>] [--out <output_type>] [--font_color=<font>] [--font_type=<font>] [--symbols <string>]
 
     Options:
-        --file       Path to the input image file (required).
-        --scale      Scale factor for aspect ratio (default: 0.5, a good value to visually maintain the ratio of ASCII characters).
-        --ascii_cols Number of ASCII columns (default: 100).
-        --out        Output type: text (default) or image (creates PNG).
-        --font_type  Characters color for image, the background will be the opposite.
-        --font_type  Font type for output image: default, arial, dirtydoz, fudd, times or times_new_roman.
-        --symbols    Custom ASCII characters to use (optional, e.g. --symbols dfsg256B%8).
+        --file        Path to the input image file (required).
+        --scale       Scale factor for aspect ratio (default: 0.5, a good value to visually maintain the ratio of ASCII characters).
+        --ascii_cols  Number of ASCII columns (default: 100).
+        --out         Output type: text (default) or image (creates PNG).
+        --font_color  Color of the image characters; the background will be the opposite.
+        --font_type   Font type for output image: default, arial, dirtydoz, fudd, times or times_new_roman.
+        --symbols     Custom ASCII characters to use (optional, e.g. --symbols dfsg256B%8).
 
     Author:
         agarnung

@@ -1,4 +1,4 @@
-# Asciimage
+# asciimage
 
 A Python program that converts images into ASCII representations, and vice versa.
 

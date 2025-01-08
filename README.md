@@ -2,6 +2,20 @@
 
 A Python program that converts images into ASCII representations, and vice versa.
 
+# Demo
+
+<p align="center">
+  <img src="./assets/circle.png" alt="Original" title="Original" style="display: inline-block; margin-right: 10px; width: 400px; height: 400px;" />
+  <img src="./assets/circle_ascii.png" alt="ASCIIfied" title="ASCIIfied" style="display: inline-block; width: 400px; height: 400px;" />,
+</p>
+along with <a href="https://github.com/agarnung/asciimage/blob/main/assets/circle_ascii.txt" target="_blank">its .txt colleague.</a>
+<br></br>
+<p align="center">
+  <img src="./assets/lena.png" alt="Original" title="Original" style="display: inline-block; margin-right: 10px; width: 400px; height: 400px;" />
+  <img src="./assets/lena_ascii.png" alt="ASCIIfied" title="ASCIIfied" style="display: inline-block; width: 400px; height: 400px;" />,
+</p>
+along with <a href="https://github.com/agarnung/asciimage/blob/main/assets/lena_ascii.txt" target="_blank">its .txt colleague.</a>
+
 ---
 
 ### Example of usage:

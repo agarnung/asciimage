@@ -22,7 +22,7 @@ What about starting from the ASCII circle and creating a real image? This is the
 
 </p>
 
-_Not that bad_.
+Now we have a [symmetry](https://www.mdpi.com/2073-8994/15/3/678). _Not that bad_.
 
 ---
 

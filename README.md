@@ -71,7 +71,6 @@ python3 asciimage.py --help
 ### TODO:
 
 - Improve the resolution of the image formed from the text, with `scale=1`.
-- Convert from ASCII to image by specifying the desired image size.
 - If an `int` argument is at the last of the command, EOF may corrupt the arg parsing. Protect this.
 
 ---

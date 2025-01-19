@@ -88,9 +88,6 @@ def save_ascii_as_image(ascii_art, output_file, font_color='black', font_type='d
         text_color = font_color
         bg_color = 255 
 
-    # Force scale to keep the aspect ratio unchanged
-    scale = 1
-
     # Calculate the dimensions of the final image based on the text
     ascii_img_width = len(ascii_art[0]) * char_width # Image width in pixels
     ascii_img_height = len(ascii_art) * char_height  # Image height in pixels
@@ -126,10 +123,7 @@ def save_ascii_text(ascii_art, text_file):
         for row in ascii_art:
             f.write(row + '\n')
 
-import numpy as np
-from PIL import Image, ImageDraw, ImageFont
-
-def calculate_char_brightness(symbol):
+def calculate_one_char_brightness(symbol):
     """
     Calculates the average brightness of a single ASCII character.
     This assumes that darker characters have a lower brightness.
@@ -149,7 +143,7 @@ def calculate_char_brightness(symbol):
     brightness = np.mean(np.array(canvas))
     return brightness
 
-def convert_ascii_to_grayscale_image(ascii_art, pixel_size):
+def convert_ascii_to_grayscale_image(ascii_art, pixel_ar):
     """
     Converts ASCII art to a grayscale image by using the brightness of each symbol in the ascii_art
     to generate corresponding grayscale pixel values. 
@@ -160,7 +154,7 @@ def convert_ascii_to_grayscale_image(ascii_art, pixel_size):
     for row in ascii_art:
         for char in row:
             if char not in char_to_brightness:
-                char_to_brightness[char] = calculate_char_brightness(char)
+                char_to_brightness[char] = calculate_one_char_brightness(char)
     
     # Min-max normalize between 0 and 255
     brightness_values = list(char_to_brightness.values())
@@ -170,15 +164,14 @@ def convert_ascii_to_grayscale_image(ascii_art, pixel_size):
         normalized_brightness = (brightness - min_brightness) / (max_brightness - min_brightness)
         char_to_brightness[char] = int(normalized_brightness * 255)
 
+    patch_width = int(pixel_ar * char_width)
+    patch_height = char_height
+
     # Create the output image with the required size
     num_rows = len(ascii_art)
     num_cols = len(ascii_art[0])
-    print(f'num_rows: {num_rows}')
-    print(f'num_cols: {num_cols}')
-    image_width = int(num_cols * pixel_size)
-    image_height = int(num_rows * pixel_size)
-    print(f'image_width: {image_width}')
-    print(f'image_height: {image_height}')
+    image_width = num_cols * patch_width
+    image_height = num_rows * patch_height
     output_image = Image.new('L', (image_width, image_height), color=255)  # 'L' mode for grayscale
     pixels = output_image.load() # To obtein access to pixel data through PIL
     
@@ -190,9 +183,9 @@ def convert_ascii_to_grayscale_image(ascii_art, pixel_size):
             pixel_value = int(avg_brightness)
             
             # Fill the patch corresponding to this character
-            for y in range(pixel_size):
-                for x in range(pixel_size):
-                    pixels[col_idx * pixel_size + x, row_idx * pixel_size + y] = pixel_value
+            for y in range(patch_height):
+                for x in range(patch_width):
+                    pixels[col_idx * patch_width + x, row_idx * patch_height + y] = pixel_value
     
     return output_image
 
@@ -217,7 +210,7 @@ def print_custom_help():
         --font_color  Color of the image characters; the background will be the opposite: (white, black)
         --font_type   Font type for output image: (default, arial, dirtydoz, fudd, times or times_new_roman).
         --symbols     Custom ASCII characters to use (optional, e.g. --symbols dfsg256B%8).
-        --pixel_size  A character represents a squared superpixel of this size (only in 'from_ascii' mode) (default: 1)
+        --pixel_ar    A character represents a squared superpixel of this aspect ratio (W/H) (only in 'from_ascii' mode) (default: 1) (min: 0.5, max: 2)
 
     Author:
         agarnung
@@ -240,7 +233,7 @@ def main():
     parser.add_argument('--font_type', dest='font_type', required=False, default='default', choices=['default', 'arial', 'dirtydoz', 'fudd', 'times', 'times_new_roman']) 
     parser.add_argument('--symbols', dest='symbols', required=False)
     parser.add_argument('--mode', dest='mode', required=True, choices=['to_ascii', 'from_ascii'])
-    parser.add_argument('--pixel_size', dest='pixel_size', required=False, default=1)
+    parser.add_argument('--pixel_ar', dest='pixel_ar', required=False, default=1.0)
 
     args = parser.parse_args()
 
@@ -264,12 +257,13 @@ def main():
 
         output_image = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_ascii.png")
         save_ascii_as_image(convert_image_to_ascii(image, ascii_cols, 1, _symbols), output_image, args.font_color, args.font_type)
+        print(f"Results saved in {output_dir}")
     elif args.mode == 'from_ascii':
-        pixel_size = int(args.pixel_size) if args.pixel_size else 1
+        pixel_ar = float(args.pixel_ar) if args.pixel_ar else 1.0
         
-        if not (1 < pixel_size < 100):
-            print("pixel_size set to 1")
-            pixel_size = 1
+        if not (0.2 < pixel_ar < 5):
+            print("pixel_ar set to 1")
+            pixel_ar = 1
 
         with open(args.imgFile, 'r') as f:
             ascii_art = [line.rstrip('\n') for line in f.readlines()]
@@ -279,9 +273,9 @@ def main():
         print(f"Input dimensions: ")
         print("Generating image from ASCII...")
 
-        output_image = convert_ascii_to_grayscale_image(ascii_art, pixel_size)
-
+        output_image = convert_ascii_to_grayscale_image(ascii_art, pixel_ar)
         output_image.save(output_image_path)
+        print(f"Results saved in {output_dir}")
         
 if __name__ == '__main__':
     main()

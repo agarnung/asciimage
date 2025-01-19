@@ -40,7 +40,10 @@ python3 -m pip install -r requirements.txt
 
 Run the program in the root folder, e.g.:
 ```bash
-python3 asciimage.py --mode to_ascii --file /home/alejandro/Pictures/lena.png --scale 0.43 --ascii_cols 100 --out ./results --font_color white --font_type times --symbols wasd123 --pixel_size 1
+python3 asciimage.py --mode to_ascii --file /home/alejandro/Pictures/lena.png --scale 0.43 --ascii_cols 100 --out ./results --font_color white --font_type times --symbols wasd123 
+```
+```bash
+python3 asciimage.py --mode from_ascii --file /home/alejandro/Pictures/lena.png --pixel_size 1
 ```
 
 Please refer to the program help:

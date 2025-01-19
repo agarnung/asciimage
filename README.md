@@ -5,14 +5,14 @@ A Python program that converts images into ASCII representations, and vice versa
 # Demo
 
 <p align="center">
-  <img src="./assets/circle.png" alt="Original" title="Original" style="display: inline-block; margin-right: 10px; width: 400px; height: 400px;" />
-  <img src="./assets/circle_ascii.png" alt="ASCIIfied" title="ASCIIfied" style="display: inline-block; width: 400px; height: 400px;" />,
+  <img src="./assets/circle.png" alt="Original" title="Original" style="display: inline-block; margin-right: 10px; width: 350px; height: 350px;" />
+  <img src="./assets/circle_ascii.png" alt="ASCIIfied" title="ASCIIfied" style="display: inline-block; width: 350px; height: 350px;" />,
 </p>
 along with <a href="https://github.com/agarnung/asciimage/blob/main/assets/circle_ascii.txt" target="_blank">its .txt colleague.</a>
 <br></br>
 <p align="center">
-  <img src="./assets/lena.png" alt="Original" title="Original" style="display: inline-block; margin-right: 10px; width: 400px; height: 400px;" />
-  <img src="./assets/lena_ascii.png" alt="ASCIIfied" title="ASCIIfied" style="display: inline-block; width: 400px; height: 400px;" />,
+  <img src="./assets/lena.png" alt="Original" title="Original" style="display: inline-block; margin-right: 10px; width: 350px; height: 350px;" />
+  <img src="./assets/lena_ascii.png" alt="ASCIIfied" title="ASCIIfied" style="display: inline-block; width: 350px; height: 350px;" />,
 </p>
 along with <a href="https://github.com/agarnung/asciimage/blob/main/assets/lena_ascii.txt" target="_blank">its .txt colleague.</a>
 
@@ -32,7 +32,7 @@ python3 -m pip install -r requirements.txt
 
 Run the program in the root folder, e.g.:
 ```bash
-python3 asciimage.py --file /home/alejandro/Pictures/lena.png --scale 0.43 --ascii_cols 100 --out ./results --font_color white --font_type times --symbols wasd123
+python3 asciimage.py --mode to_ascii --file /home/alejandro/Pictures/lena.png --scale 0.43 --ascii_cols 100 --out ./results --font_color white --font_type times --symbols wasd123
 ```
 
 Please refer to the program help:

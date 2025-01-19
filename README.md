@@ -16,7 +16,7 @@ along with <a href="https://github.com/agarnung/asciimage/blob/main/assets/circl
 </p>
 along with <a href="https://github.com/agarnung/asciimage/blob/main/assets/lena_ascii.txt" target="_blank">its .txt colleague.</a>
 
-What about starting from the ASCII circle and creating a real image? This is the result:
+What about starting from the [ASCII circle](https://github.com/agarnung/asciimage/blob/main/assets/circle_ascii.txt) and creating a real image? This is the result:
 <p align="center">
   <img src="./assets/circle_ascii_reconstructed.png" alt="Reconstructed" title="Reconstructed" style="display: inline-block; margin-right: 10px; width: 350px; height: 350px;" />
 

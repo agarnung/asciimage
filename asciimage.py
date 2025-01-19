@@ -162,11 +162,23 @@ def convert_ascii_to_grayscale_image(ascii_art, pixel_size):
             if char not in char_to_brightness:
                 char_to_brightness[char] = calculate_char_brightness(char)
     
+    # Min-max normalize between 0 and 255
+    brightness_values = list(char_to_brightness.values())
+    min_brightness = min(brightness_values)
+    max_brightness = max(brightness_values)
+    for char, brightness in char_to_brightness.items():
+        normalized_brightness = (brightness - min_brightness) / (max_brightness - min_brightness)
+        char_to_brightness[char] = int(normalized_brightness * 255)
+
     # Create the output image with the required size
     num_rows = len(ascii_art)
     num_cols = len(ascii_art[0])
-    image_width = num_cols * pixel_size
-    image_height = num_rows * pixel_size
+    print(f'num_rows: {num_rows}')
+    print(f'num_cols: {num_cols}')
+    image_width = int(num_cols * pixel_size)
+    image_height = int(num_rows * pixel_size)
+    print(f'image_width: {image_width}')
+    print(f'image_height: {image_height}')
     output_image = Image.new('L', (image_width, image_height), color=255)  # 'L' mode for grayscale
     pixels = output_image.load() # To obtein access to pixel data through PIL
     
@@ -194,7 +206,7 @@ def print_custom_help():
     A Python program to convert images into ASCII representations, and vice versa.
 
     Usage:
-        python asciimage.py --file <image_path> [--scale <float>] [--ascii_cols <int>] [--out <output_type>] [--font_color=<font>] [--font_type=<font>] [--symbols <string>]
+        python asciimage.py --mode <mode> --file <image_path> [--pixel_size <int>] [--scale <float>] [--ascii_cols <int>] [--out <output_type>] [--font_color=<font>] [--font_type=<font>] [--symbols <string>]
 
     Options:
         --mode        Mode of operation: 'to_ascii' converts image to ASCII, 'from_ascii' converts ASCII to image (required).
@@ -253,6 +265,12 @@ def main():
         output_image = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_ascii.png")
         save_ascii_as_image(convert_image_to_ascii(image, ascii_cols, 1, _symbols), output_image, args.font_color, args.font_type)
     elif args.mode == 'from_ascii':
+        pixel_size = int(args.pixel_size) if args.pixel_size else 1
+        
+        if not (1 < pixel_size < 100):
+            print("pixel_size set to 1")
+            pixel_size = 1
+
         with open(args.imgFile, 'r') as f:
             ascii_art = [line.rstrip('\n') for line in f.readlines()]
 
@@ -261,7 +279,7 @@ def main():
         print(f"Input dimensions: ")
         print("Generating image from ASCII...")
 
-        output_image = convert_ascii_to_grayscale_image(ascii_art, args.pixel_size)
+        output_image = convert_ascii_to_grayscale_image(ascii_art, pixel_size)
 
         output_image.save(output_image_path)
         

@@ -16,6 +16,14 @@ along with <a href="https://github.com/agarnung/asciimage/blob/main/assets/circl
 </p>
 along with <a href="https://github.com/agarnung/asciimage/blob/main/assets/lena_ascii.txt" target="_blank">its .txt colleague.</a>
 
+What about starting from the ASCII circle and creating a real image? This is the result:
+<p align="center">
+  <img src="./assets/circle_ascii_reconstructed.png" alt="Reconstructed" title="Reconstructed" style="display: inline-block; margin-right: 10px; width: 350px; height: 350px;" />
+
+</p>
+
+_Not that bad_.
+
 ---
 
 ### Example of usage:
@@ -32,7 +40,7 @@ python3 -m pip install -r requirements.txt
 
 Run the program in the root folder, e.g.:
 ```bash
-python3 asciimage.py --mode to_ascii --file /home/alejandro/Pictures/lena.png --scale 0.43 --ascii_cols 100 --out ./results --font_color white --font_type times --symbols wasd123
+python3 asciimage.py --mode to_ascii --file /home/alejandro/Pictures/lena.png --scale 0.43 --ascii_cols 100 --out ./results --font_color white --font_type times --symbols wasd123 --pixel_size 1
 ```
 
 Please refer to the program help:
@@ -61,5 +69,6 @@ python3 asciimage.py --help
 
 - Improve the resolution of the image formed from the text, with `scale=1`.
 - Convert from ASCII to image by specifying the desired image size.
+- If an `int` argument is at the last of the command, EOF may corrupt the arg parsing. Protect this.
 
 ---

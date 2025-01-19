@@ -126,8 +126,63 @@ def save_ascii_text(ascii_art, text_file):
         for row in ascii_art:
             f.write(row + '\n')
 
-def convert_ascii_to_grayscale_image():
-    print("A work in progress.")
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+
+def calculate_char_brightness(symbol):
+    """
+    Calculates the average brightness of a single ASCII character.
+    This assumes that darker characters have a lower brightness.
+    """
+    # Canvas size for the character (empirical value)
+    char_width = 10
+    char_height = 10
+
+    canvas = Image.new('L', (50, 50), color=255)  # Luminance mode
+    draw = ImageDraw.Draw(canvas)
+    font = ImageFont.load_default()  # Use default font
+    
+    # Position to draw the symbol
+    draw.text((char_width, char_height), symbol, font=font, fill=0)
+    
+    # Calculate the average brightness of the character
+    brightness = np.mean(np.array(canvas))
+    return brightness
+
+def convert_ascii_to_grayscale_image(ascii_art, pixel_size):
+    """
+    Converts ASCII art to a grayscale image by using the brightness of each symbol in the ascii_art
+    to generate corresponding grayscale pixel values. 
+    Each character in the ascii_art is a patch of pixels of size `pixel_size`.
+    """
+    # Dictionary to store the brightness of each unique character in the ascii_art
+    char_to_brightness = {}
+    for row in ascii_art:
+        for char in row:
+            if char not in char_to_brightness:
+                char_to_brightness[char] = calculate_char_brightness(char)
+    
+    # Create the output image with the required size
+    num_rows = len(ascii_art)
+    num_cols = len(ascii_art[0])
+    image_width = num_cols * pixel_size
+    image_height = num_rows * pixel_size
+    output_image = Image.new('L', (image_width, image_height), color=255)  # 'L' mode for grayscale
+    pixels = output_image.load() # To obtein access to pixel data through PIL
+    
+    # Process each character in the ASCII art and fill the image with corresponding brightness
+    for row_idx, row in enumerate(ascii_art):
+        for col_idx, char in enumerate(row):
+            avg_brightness = char_to_brightness.get(char, 255) # Default to white if symbol not found
+            
+            pixel_value = int(avg_brightness)
+            
+            # Fill the patch corresponding to this character
+            for y in range(pixel_size):
+                for x in range(pixel_size):
+                    pixels[col_idx * pixel_size + x, row_idx * pixel_size + y] = pixel_value
+    
+    return output_image
 
 def print_custom_help():
     """
@@ -150,6 +205,7 @@ def print_custom_help():
         --font_color  Color of the image characters; the background will be the opposite: (white, black)
         --font_type   Font type for output image: (default, arial, dirtydoz, fudd, times or times_new_roman).
         --symbols     Custom ASCII characters to use (optional, e.g. --symbols dfsg256B%8).
+        --pixel_size  A character represents a squared superpixel of this size (only in 'from_ascii' mode) (default: 1)
 
     Author:
         agarnung
@@ -172,6 +228,7 @@ def main():
     parser.add_argument('--font_type', dest='font_type', required=False, default='default', choices=['default', 'arial', 'dirtydoz', 'fudd', 'times', 'times_new_roman']) 
     parser.add_argument('--symbols', dest='symbols', required=False)
     parser.add_argument('--mode', dest='mode', required=True, choices=['to_ascii', 'from_ascii'])
+    parser.add_argument('--pixel_size', dest='pixel_size', required=False, default=1)
 
     args = parser.parse_args()
 
@@ -194,20 +251,19 @@ def main():
         save_ascii_text(ascii_art, text_file)
 
         output_image = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_ascii.png")
-        save_ascii_as_image(convert_image_to_ascii(image, ascii_cols, 1, _symbols), output_image, args.font_color, args.font_type)  # Changed here
+        save_ascii_as_image(convert_image_to_ascii(image, ascii_cols, 1, _symbols), output_image, args.font_color, args.font_type)
     elif args.mode == 'from_ascii':
         with open(args.imgFile, 'r') as f:
             ascii_art = [line.rstrip('\n') for line in f.readlines()]
 
-        output_image = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_reconstructed.png")
+        output_image_path = os.path.join(output_dir, f"{os.path.splitext(os.path.basename(args.imgFile))[0]}_reconstructed.png")
         
         print(f"Input dimensions: ")
         print("Generating image from ASCII...")
 
-        convert_ascii_to_grayscale_image()
+        output_image = convert_ascii_to_grayscale_image(ascii_art, args.pixel_size)
 
-        # save image
-        #...
+        output_image.save(output_image_path)
         
 if __name__ == '__main__':
     main()

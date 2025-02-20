@@ -72,5 +72,6 @@ python3 asciimage.py --help
 
 - Improve the resolution of the image formed from the text, with `scale=1`.
 - If an `int` argument is at the last of the command, EOF may corrupt the arg parsing. Protect this.
+- Add color to letters in order to convert RGB images.
 
 ---
